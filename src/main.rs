@@ -42,7 +42,29 @@ fn main() {
 
     // 手札を表示
     println!("----HAND----");
-    for card in hand {
+    for card in &hand {
+        println!("{:?} {:}", card.suit, card.rank);
+    }
+
+    // --------- 手札交換 ---------
+    println!("入れ替えたいカードの番号を入力してください（例： 1 2 3）");
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap();
+
+    // 選ばれたカードを山札から引いたカードで置き換える
+    let numbers: Vec<usize> = input
+        .split_whitespace() // 空白区切りで分割（ "1 2 3" => ["1", "2", "3"] ）
+        .map(|x| x.parse().unwrap()) // 文字列を数値に変換 ( "1" => 1 )
+        .collect::<Vec<usize>>(); // Vecに変換
+
+    // 与えられた数字の箇所を山札から取り出し、手札の該当箇所を置き換える
+    for number in numbers {
+        hand[number - 1] = deck.pop().unwrap();
+    }
+
+    hand.sort_by(|a, b| a.rank.cmp(&b.rank));
+    println!("----HAND----");
+    for card in &hand {
         println!("{:?} {:}", card.suit, card.rank);
     }
 }
